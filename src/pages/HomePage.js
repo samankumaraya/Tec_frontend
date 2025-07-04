@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     customers: 0,
     pendingJobs: 0,
     completedJobs: 0,
   });
 
+  // Button hover state to mimic CSS :hover with inline styles
+  const [hoveredBtn, setHoveredBtn] = useState(null);
+
   useEffect(() => {
-    axios.get('http://localhost:5000/api/dashboard')
+    axios.get('http://localhost:5000/api/dashboard-stats') // Make sure backend path matches
       .then(res => setStats(res.data))
       .catch(err => console.error(err));
   }, []);
+
+  const buttons = [
+    { label: 'Add Job Sheet', path: '/Add_jb', id: 'add' },
+    { label: 'View Job Sheets', path: '/view_jb', id: 'view' },
+    { label: 'Completed JOBS', path: '/view_com_jb', id: 'completed' },
+  ];
 
   return (
     <div style={containerStyle}>
@@ -23,9 +32,20 @@ const HomePage = () => {
       </h1>
 
       <div style={buttonGroupStyle}>
-        <button style={btnStyle} onClick={() => navigate('/Add_jb')}>Add Job Sheet</button>
-        <button style={btnStyle}>View Job Sheets</button>
-        <button style={btnStyle}>Completed JOBS</button>
+        {buttons.map(({ label, path, id }) => (
+          <button
+            key={id}
+            style={{
+              ...btnStyle,
+              backgroundColor: hoveredBtn === id ? '#e0e0e0' : '#fff',
+            }}
+            onClick={() => navigate(path)}
+            onMouseEnter={() => setHoveredBtn(id)}
+            onMouseLeave={() => setHoveredBtn(null)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       <div style={statsGroupStyle}>
@@ -46,7 +66,7 @@ const HomePage = () => {
   );
 };
 
-// Full page container with flex column layout, centered horizontally and vertically
+// Your original styles here:
 const containerStyle = {
   fontFamily: 'Arial, sans-serif',
   background: '#f5f5f5',
@@ -59,7 +79,6 @@ const containerStyle = {
   alignItems: 'center',
 };
 
-// Title with responsive font size
 const titleStyle = {
   color: 'red',
   fontSize: '3rem',
@@ -67,7 +86,6 @@ const titleStyle = {
   userSelect: 'none',
 };
 
-// Buttons container with gap and wrap for small screens
 const buttonGroupStyle = {
   display: 'flex',
   gap: '20px',
@@ -78,7 +96,6 @@ const buttonGroupStyle = {
   maxWidth: '600px',
 };
 
-// Responsive button style
 const btnStyle = {
   padding: '16px 28px',
   fontSize: '1.2rem',
@@ -90,11 +107,6 @@ const btnStyle = {
   transition: 'background-color 0.3s ease',
 };
 
-btnStyle[':hover'] = {
-  backgroundColor: '#e0e0e0',
-};
-
-// Stats cards container with gap and wrap
 const statsGroupStyle = {
   display: 'flex',
   gap: '20px',
@@ -105,7 +117,6 @@ const statsGroupStyle = {
   maxWidth: '700px',
 };
 
-// Individual card style with responsive width
 const cardStyle = {
   background: '#eee',
   padding: '30px 20px',

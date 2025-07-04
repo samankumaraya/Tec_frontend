@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 
 const AddJobSheet = () => {
@@ -27,6 +27,8 @@ const AddJobSheet = () => {
     finalCost: '',
   });
 
+  const printRef = useRef();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -36,9 +38,41 @@ const AddJobSheet = () => {
     try {
       await axios.post('http://localhost:5000/api/jobsheets', formData);
       alert('✅ Job Sheet Added Successfully!');
+      setTimeout(() => {
+        handlePrint();
+      }, 500); // short delay for state consistency
     } catch (error) {
       console.error('❌ Error adding job sheet:', error);
     }
+  };
+
+  const handlePrint = () => {
+    const printContent = printRef.current.innerHTML;
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Job Sheet</title>
+          <style>
+            body { font-family: sans-serif; padding: 20px; }
+            h2 { text-align: center; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            td { padding: 4px; vertical-align: top; }
+            tr { border-bottom: 1px solid #ccc; }
+            @page { size: A5; margin: 10mm; }
+          </style>
+        </head>
+        <body onload="window.print(); window.onafterprint = window.close;">
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    // Refresh main page after a short delay
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
 
   const renderInput = (key, labelOverride = null) => {
@@ -135,6 +169,21 @@ const AddJobSheet = () => {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* Hidden Printable Content */}
+      <div ref={printRef} style={{ display: 'none' }}>
+        <h2>🖨️ Printer Repair Job Sheet</h2>
+        <table>
+          <tbody>
+            {Object.keys(formData).map((key) => (
+              <tr key={key}>
+                <td><strong>{key.replace(/([A-Z])/g, ' $1')}</strong></td>
+                <td>: {formData[key]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
