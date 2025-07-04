@@ -27,6 +27,7 @@ const HomePage = () => {
 
   return (
     <div style={containerStyle}>
+      
       <h1 style={titleStyle}>
         TECHNICAL <span style={{ color: 'black' }}>HUB</span>
       </h1>

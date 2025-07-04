@@ -4,6 +4,7 @@ import axios from 'axios';
 const ViewJobSheets = () => {
   const [jobSheets, setJobSheets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchJobSheets();
@@ -21,7 +22,6 @@ const ViewJobSheets = () => {
   };
 
   const handlePrint = (job) => {
-    // your existing print code unchanged
     const printWindow = window.open('', '', 'width=800,height=600');
     const printableHTML = `
       <html>
@@ -69,10 +69,23 @@ const ViewJobSheets = () => {
     printWindow.document.close();
   };
 
+  const handleDelete = async (id) => {
+    const confirm = window.confirm('Are you sure you want to delete this job sheet?');
+    if (!confirm) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/jobsheets/${id}`);
+      setJobSheets(jobSheets.filter(job => job.id !== id));
+      alert('🗑️ Job sheet deleted.');
+    } catch (error) {
+      console.error('❌ Error deleting job sheet:', error);
+      alert('Failed to delete. Try again.');
+    }
+  };
+
   const handleStatusChange = async (id, newStatus) => {
     try {
       await axios.patch(`http://localhost:5000/api/jobsheets/${id}`, { jobStatus: newStatus });
-      // Update local state optimistically:
       setJobSheets(prev =>
         prev.map(job => (job.id === id ? { ...job, jobStatus: newStatus } : job))
       );
@@ -82,16 +95,33 @@ const ViewJobSheets = () => {
     }
   };
 
+  const filteredJobs = jobSheets.filter(job =>
+    job.customerContact?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">📋 All Job Sheets</h2>
+    <div className="min-h-screen bg-green-100 p-6">
+      <div className="text-center text-3xl font-bold text-green-800 mb-4 flex justify-center items-center gap-2">
+        ✅ All Job Sheets
+      </div>
+
+      {/* 🔍 Search by Phone Number */}
+      <div className="mb-4 flex justify-center">
+        <input
+          type="text"
+          placeholder="Search by phone number..."
+          className="border border-green-400 px-4 py-2 rounded w-full max-w-md"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
       {loading ? (
         <div className="text-center text-lg text-blue-600">Loading job sheets...</div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded shadow p-4">
-          <table className="min-w-full text-sm border">
-            <thead className="bg-gray-200">
+        <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4">
+          <table className="min-w-full text-sm border border-green-300">
+            <thead className="bg-green-200 text-green-900">
               <tr>
                 <th className="p-2 border">ID</th>
                 <th className="p-2 border">Customer</th>
@@ -104,15 +134,15 @@ const ViewJobSheets = () => {
               </tr>
             </thead>
             <tbody>
-              {jobSheets.length === 0 ? (
+              {filteredJobs.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="text-center p-4 text-gray-500">
-                    No job sheets found.
+                    No matching job sheets.
                   </td>
                 </tr>
               ) : (
-                jobSheets.map((job) => (
-                  <tr key={job.id} className="border-b hover:bg-gray-50">
+                filteredJobs.map((job) => (
+                  <tr key={job.id} className="border-b hover:bg-green-50 transition duration-200">
                     <td className="p-2 border text-center">{job.id}</td>
                     <td className="p-2 border">
                       {job.customerName}
@@ -135,12 +165,18 @@ const ViewJobSheets = () => {
                     </td>
                     <td className="p-2 border text-center">{job.technicianAssigned}</td>
                     <td className="p-2 border text-center">{job.dateReceived}</td>
-                    <td className="p-2 border text-center">
+                    <td className="p-2 border text-center flex flex-col md:flex-row justify-center gap-2">
                       <button
                         onClick={() => handlePrint(job)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
                       >
                         🖨️ Print
+                      </button>
+                      <button
+                        onClick={() => handleDelete(job.id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs"
+                      >
+                        🗑️ Delete
                       </button>
                     </td>
                   </tr>

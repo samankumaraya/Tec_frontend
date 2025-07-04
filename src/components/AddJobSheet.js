@@ -33,6 +33,25 @@ const AddJobSheet = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleContactBlur = async (e) => {
+    const contact = e.target.value.trim();
+    if (!contact) return;
+
+    try {
+      const res = await axios.get(`http://localhost:5000/api/customers/${contact}`);
+      const { customerName, customerEmail, customerAddress } = res.data;
+
+      setFormData((prev) => ({
+        ...prev,
+        customerName,
+        customerEmail,
+        customerAddress,
+      }));
+    } catch (error) {
+      console.log('ℹ️ No existing customer found or error:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -40,7 +59,7 @@ const AddJobSheet = () => {
       alert('✅ Job Sheet Added Successfully!');
       setTimeout(() => {
         handlePrint();
-      }, 500); // short delay for state consistency
+      }, 500);
     } catch (error) {
       console.error('❌ Error adding job sheet:', error);
     }
@@ -62,21 +81,17 @@ const AddJobSheet = () => {
             @page { size: A5; margin: 10mm; }
           </style>
         </head>
-        <body onload="window.print(); window.onafterprint = window.close;">
+        <body onload="window.print(); window.onafterprint = window.close();">
           ${printContent}
         </body>
       </html>
     `);
     printWindow.document.close();
-
-    // Refresh main page after a short delay
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+    setTimeout(() => window.location.reload(), 2000);
   };
 
-  const renderInput = (key, labelOverride = null) => {
-    const label = labelOverride || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  const renderInput = (key) => {
+    const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
 
     const dropdownFields = {
       warrantyStatus: ['Yes', 'No'],
@@ -124,6 +139,7 @@ const AddJobSheet = () => {
             name={key}
             value={formData[key]}
             onChange={handleChange}
+            onBlur={key === 'customerContact' ? handleContactBlur : undefined}
             className="border border-gray-300 px-2 py-1 w-full bg-white rounded"
           />
         )}
@@ -144,12 +160,10 @@ const AddJobSheet = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black py-6">
-      <div className="bg-gray-300 text-black text-3xl font-bold px-6 py-3 border border-black w-fit mx-auto">
-        Add Job Sheet
-      </div>
+    <div className="min-h-screen bg-green-100 py-1">
+      
 
-      <div className="bg-pink-100 max-w-7xl mx-auto mt-4 p-6 border border-black">
+      <div className="bg-white max-w-7xl mx-auto mt-6 p-8 border border-green-300 rounded shadow-lg">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div>
@@ -160,26 +174,30 @@ const AddJobSheet = () => {
             </div>
           </div>
 
-          <div className="text-center mt-8">
+          <div className="text-center mt-10">
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded font-semibold text-lg shadow"
             >
               ➕ Add Job Sheet
             </button>
+
+           
+
           </div>
+          
         </form>
       </div>
 
       {/* Hidden Printable Content */}
       <div ref={printRef} style={{ display: 'none' }}>
-        <h2>🖨️ Printer Repair Job Sheet</h2>
-        <table>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>🖨️ Printer Repair Job Sheet</h2>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             {Object.keys(formData).map((key) => (
-              <tr key={key}>
-                <td><strong>{key.replace(/([A-Z])/g, ' $1')}</strong></td>
-                <td>: {formData[key]}</td>
+              <tr key={key} style={{ borderBottom: '1px solid #ccc' }}>
+                <td style={{ padding: '4px', fontWeight: 'bold' }}>{key.replace(/([A-Z])/g, ' $1')}</td>
+                <td style={{ padding: '4px' }}>: {formData[key]}</td>
               </tr>
             ))}
           </tbody>
