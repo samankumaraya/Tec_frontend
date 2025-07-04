@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Header from '../pages/Header';
 
 const CompletedJobs = () => {
   const [completedJobs, setCompletedJobs] = useState([]);
@@ -57,7 +58,8 @@ const CompletedJobs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 p-6">
+    <div className="min-h-screen bg-green-100 p-0">
+      <Header/>
       <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
         ✅ Completed Job Sheets
       </h2>

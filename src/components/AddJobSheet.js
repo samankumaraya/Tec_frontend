@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
+import Header from '../pages/Header';
+
 
 const AddJobSheet = () => {
   const [formData, setFormData] = useState({
@@ -104,7 +106,9 @@ const AddJobSheet = () => {
     const isTextArea = ['reportedProblem', 'repairNotes', 'additionalComments'].includes(key);
 
     return (
+      
       <div key={key} className="grid grid-cols-2 items-center mb-3">
+      
         <label className="text-right font-medium text-black pr-4">{label}</label>
         {dropdownFields[key] ? (
           <select
@@ -160,8 +164,10 @@ const AddJobSheet = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-green-100 py-1">
-      
+    
+    <div className="min-h-screen bg-green-100 py--10">
+     <Header/>
+    
 
       <div className="bg-white max-w-7xl mx-auto mt-6 p-8 border border-green-300 rounded shadow-lg">
         <form onSubmit={handleSubmit}>

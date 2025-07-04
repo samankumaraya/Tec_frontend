@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Header from '../pages/Header';
 
 const ViewJobSheets = () => {
   const [jobSheets, setJobSheets] = useState([]);
@@ -100,7 +101,8 @@ const ViewJobSheets = () => {
   );
 
   return (
-    <div className="min-h-screen bg-green-100 p-6">
+    <div className="min-h-screen bg-green-100 p-0">
+      <Header/>
       <div className="text-center text-3xl font-bold text-green-800 mb-4 flex justify-center items-center gap-2">
         ✅ All Job Sheets
       </div>
