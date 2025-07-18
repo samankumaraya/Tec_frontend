@@ -23,43 +23,98 @@ const CompletedJobs = () => {
 
   const handlePrint = (job) => {
     const printWindow = window.open('', '', 'width=800,height=600');
+
+    const printJob = { ...job };
+    ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].forEach((field) => {
+      if (printJob[field]) {
+        printJob[field] = new Date(printJob[field]).toLocaleString();
+      }
+    });
+
+    const invoiceNumber = printJob.id ? `#${String(printJob.id).padStart(4, '0')}` : '';
+
     const printableHTML = `
       <html>
         <head>
-          <title>Job Sheet #${job.id}</title>
+          <title>Printer Job Sheet</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h2 { text-align: center; }
-            table { width: 100%; border-collapse: collapse; }
-            td { padding: 6px; vertical-align: top; }
-            tr { border-bottom: 1px solid #ccc; }
-            @page { size: A5; margin: 10mm; }
+            body { font-family: Arial, sans-serif; padding: 30px; }
+            .header { display: flex; justify-content: space-between; }
+            .logo-section img { height: 60px; }
+            .info-table td { padding: 5px; vertical-align: top; }
+            .info-table { width: 100%; margin-top: 20px; }
+            .section-title { font-weight: bold; margin-top: 20px; font-size: 16px; }
+            .footer { margin-top: 30px; font-size: 12px; }
+            .terms { font-size: 11px; margin-top: 10px; color: #333; }
+            .red { color: red; font-weight: bold; }
+            .line { border-top: 1px solid #000; margin-top: 20px; }
           </style>
         </head>
         <body onload="window.print(); window.onafterprint = window.close();">
-          <h2>🖨️ Completed Job Sheet</h2>
-          <table>
-            <tr><td><strong>ID</strong></td><td>: ${job.id}</td></tr>
-            <tr><td><strong>Customer</strong></td><td>: ${job.customerName}</td></tr>
-            <tr><td><strong>Contact</strong></td><td>: ${job.customerContact}</td></tr>
-            <tr><td><strong>Printer</strong></td><td>: ${job.printerBrand} ${job.printerModel}</td></tr>
-            <tr><td><strong>Problem</strong></td><td>: ${job.reportedProblem}</td></tr>
-            <tr><td><strong>Repair Notes</strong></td><td>: ${job.repairNotes}</td></tr>
-            <tr><td><strong>Technician</strong></td><td>: ${job.technicianAssigned}</td></tr>
-            <tr><td><strong>Final Cost</strong></td><td>: Rs. ${job.finalCost}</td></tr>
-            <tr><td><strong>Date Received</strong></td><td>: ${job.dateReceived}</td></tr>
-            <tr><td><strong>Pickup Date</strong></td><td>: ${job.pickupDate}</td></tr>
+          <div class="header">
+            <div class="logo-section">
+              <img src="${window.location.origin}/logo192.png" alt="Logo" />
+              <div><strong>Technical Hub</strong><br/>
+                221/A Makola Rd,<br/>
+                Kiribathgoda,<br/>
+                077 040 3904
+              </div>
+            </div>
+            <div class="customer-info">
+              <div><strong>Customer Name:</strong> ${printJob.customerName || ''}</div>
+              <div><strong>Customer Contact:</strong> ${printJob.customerContact || ''}</div>
+              <div><strong>Date:</strong> ${new Date().toLocaleString()}</div>
+              <div><strong>Job No:</strong> ${invoiceNumber}</div>
+            </div>
+          </div>
+
+          <div class="line"></div>
+
+          <table class="info-table">
+            <tr><td><strong>Printer:</strong></td><td>${printJob.printerBrand || ''} ${printJob.printerModel || ''}</td></tr>
+            <tr><td><strong>Serial Number:</strong></td><td>${printJob.serialNumber || ''}</td></tr>
+           
+            <tr><td><strong>Repair Notes:</strong></td><td>${printJob.repairNotes || ''}</td></tr>
+            <tr><td><strong>Technician:</strong></td><td>${printJob.technicianAssigned || ''}</td></tr>
+            <tr><td><strong>Job Status:</strong></td><td>${printJob.jobStatus || 'Completed'}</td></tr>
+            
+            <tr><td><strong>Cost Estimate:</strong></td><td>${printJob.costEstimate || ''}</td></tr>
+            <tr><td><strong>Final Cost:</strong></td><td>${printJob.finalCost || ''}</td></tr>
+            <tr><td><strong>Date Received:</strong></td><td>${printJob.dateReceived || ''}</td></tr>
+            <tr><td><strong>Pickup Date:</strong></td><td>${printJob.pickupDate || ''}</td></tr>
           </table>
+
+          <div class="section-title">Thank you for choosing Technical Hub!</div>
+          <div>We appreciate your trust in our printer repair services.</div>
+          <div>If you have any questions or need further assistance, please feel free to contact us.</div>
+
+          <div class="footer">
+            <div class="red">Terms & Conditions</div>
+            <div class="terms">
+              • We provide a 30-day warranty on all repairs.<br/>
+              • We are not responsible for any data loss during repairs.<br/>
+              • Repair costs will be estimated and approved before work begins.<br/>
+              • Repair times may vary depending on parts and problem complexity.<br/>
+              • Please remove all personal items from the printer before submitting it for repair.
+            </div>
+          </div>
         </body>
       </html>
     `;
+
     printWindow.document.write(printableHTML);
     printWindow.document.close();
   };
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className="min-h-screen bg-green-100 p-0">
-      <Header/>
+      <Header />
       <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
         ✅ Completed Job Sheets
       </h2>
@@ -90,12 +145,12 @@ const CompletedJobs = () => {
               ) : (
                 completedJobs.map((job) => (
                   <tr key={job.id} className="hover:bg-gray-50 border-b">
-                    <td className="p-2 border text-center">{job.id}</td>
+                    <td className="p-2 border text-center">{String(job.id).padStart(4, '0')}</td>
                     <td className="p-2 border">{job.customerName}</td>
                     <td className="p-2 border">{job.printerBrand} {job.printerModel}</td>
                     <td className="p-2 border">{job.reportedProblem}</td>
                     <td className="p-2 border text-center">{job.technicianAssigned}</td>
-                    <td className="p-2 border text-center">{job.dateReceived}</td>
+                    <td className="p-2 border text-center">{formatDate(job.dateReceived)}</td>
                     <td className="p-2 border text-center">
                       <button
                         onClick={() => handlePrint(job)}

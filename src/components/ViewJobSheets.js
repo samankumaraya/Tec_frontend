@@ -114,7 +114,7 @@ const ViewJobSheets = () => {
           <tr><td><strong>Serial Number:</strong></td><td>${printJob.serialNumber || ''}</td></tr>
           <tr><td><strong>Reported Problem:</strong></td><td>${printJob.reportedProblem || ''}</td></tr>
           <tr><td><strong>Repair Notes:</strong></td><td>${printJob.repairNotes || ''}</td></tr>
-          <tr><td><strong>Warranty:</strong></td><td>${printJob.warranty || '30 Days'}</td></tr>
+          
           <tr><td><strong>Job Status:</strong></td><td>${printJob.jobStatus || ''}</td></tr>
           <tr><td><strong>Payment:</strong></td><td>${printJob.payment || ''}</td></tr>
           <tr><td><strong>Cost Estimate:</strong></td><td>${printJob.costEstimate || ''}</td></tr>
