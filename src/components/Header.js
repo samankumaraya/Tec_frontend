@@ -10,7 +10,7 @@ const Header = () => {
         <h1 className="text-2xl font-bold">🛠️ Printer Repair System</h1>
 
         <nav className="flex gap-4">
-          <Link to="/" className="flex items-center gap-2 hover:text-gray-100">
+          <Link to="/home" className="flex items-center gap-2 hover:text-gray-100">
             <Home className="w-5 h-5" />
             Home
           </Link>
