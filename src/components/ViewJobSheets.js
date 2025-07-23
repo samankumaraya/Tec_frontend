@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../pages/Header';
 
-// Helper to format dates like "2025-07-02 18:30"
+
 const formatDateTime = (dateStr) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  if (isNaN(date)) return dateStr; // fallback if invalid date
+  if (isNaN(date)) return dateStr; 
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
@@ -15,7 +15,7 @@ const formatDateTime = (dateStr) => {
   return `${y}-${m}-${d} ${h}:${min}`;
 };
 
-// Helper to convert date string to "YYYY-MM-DDTHH:mm" for datetime-local input
+
 const toDateTimeLocal = (dateStr) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
@@ -28,10 +28,9 @@ const toDateTimeLocal = (dateStr) => {
   return `${y}-${m}-${d}T${h}:${min}`;
 };
 
-// Helper to convert datetime-local input back to server format "YYYY-MM-DD HH:mm:ss"
 const fromDateTimeLocal = (dtLocal) => {
   if (!dtLocal) return null;
-  // Convert "YYYY-MM-DDTHH:mm" => "YYYY-MM-DD HH:mm:ss"
+ 
   return dtLocal.replace('T', ' ') + ':00';
 };
 
@@ -69,7 +68,7 @@ const ViewJobSheets = () => {
     }
   });
 
-  // Format ID to #0008 style
+  
   const invoiceNumber = printJob.id ? `#${String(printJob.id).padStart(4, '0')}` : '';
 
   const printableHTML = `
@@ -144,7 +143,7 @@ const ViewJobSheets = () => {
 };
 
   const handleEditClick = (job) => {
-    // Convert date fields to datetime-local format for inputs
+   
     const jobCopy = { ...job };
     ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].forEach((field) => {
       jobCopy[field] = toDateTimeLocal(jobCopy[field]);
@@ -160,14 +159,14 @@ const ViewJobSheets = () => {
       ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].includes(name) &&
       type === 'datetime-local'
     ) {
-      val = value; // store in datetime-local format during editing
+      val = value; 
     }
     setEditingJob((prev) => ({ ...prev, [name]: val }));
   };
 
   const handleEditSubmit = async () => {
     try {
-      // Convert datetime-local fields back to DB format before sending
+      
       const updatedJob = { ...editingJob };
       ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].forEach((field) => {
         if (updatedJob[field]) {
@@ -187,7 +186,7 @@ const ViewJobSheets = () => {
   };
 
   const handleViewClick = (job) => {
-    // Format dates in viewing job for display
+   
     const jobCopy = { ...job };
     ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].forEach((field) => {
       if (jobCopy[field]) {
@@ -325,14 +324,14 @@ const ViewJobSheets = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
+     
       {isModalOpen && editingJob && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg max-h-[80vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 text-green-700">✏️ Edit Job Sheet</h2>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(editingJob).map(([key, value]) => {
-                // Show date inputs for date fields
+                
                 if (
                   ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].includes(key)
                 ) {
@@ -355,7 +354,7 @@ const ViewJobSheets = () => {
                     </div>
                   );
                 }
-                // For all other fields use text input
+                
                 return (
                   <div key={key} className="flex flex-col">
                     <label
@@ -394,7 +393,7 @@ const ViewJobSheets = () => {
         </div>
       )}
 
-      {/* View Modal */}
+      
       {viewingJob && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg max-h-[80vh] overflow-y-auto">

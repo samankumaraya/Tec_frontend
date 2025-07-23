@@ -32,13 +32,13 @@ const CompletedJobs = () => {
     fetchCompletedJobs();
   }, []);
 
-  // Date formatting
+  
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     return new Date(dateStr).toLocaleDateString();
   };
 
-  // Print and Invoice share same logic, only label differs
+  
   const generatePrintView = (job, type = 'Job') => {
     const printJob = { ...job };
     ['dateReceived', 'pickupDate', 'estimatedCompletionDate'].forEach((field) => {
@@ -114,7 +114,7 @@ const CompletedJobs = () => {
     printWindow.document.close();
   };
 
-  // Filters
+
   useEffect(() => {
     const filtered = completedJobs.filter((job) => {
       const matchSearch =
@@ -133,10 +133,10 @@ const CompletedJobs = () => {
     setFilteredJobs(filtered);
   }, [searchTerm, startDate, endDate, technician, completedJobs]);
 
-  // Unique technicians for dropdown
+ 
   const technicianList = [...new Set(completedJobs.map((job) => job.technicianAssigned))];
 
-  // Excel export
+ 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(filteredJobs);
     const wb = XLSX.utils.book_new();
@@ -144,7 +144,7 @@ const CompletedJobs = () => {
     XLSX.writeFile(wb, 'CompletedJobs.xlsx');
   };
 
-  // PDF export
+  
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text('Completed Job Sheets', 14, 14);
