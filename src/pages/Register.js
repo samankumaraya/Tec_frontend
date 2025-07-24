@@ -1,18 +1,36 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const styles = {
+  pageWrapper: {
+    minHeight: '100vh',
+    backgroundImage: `url("data:image/svg+xml;utf8,
+      <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'>
+        <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' 
+              fill='rgba(255, 0, 0, 0.05)' font-size='50' font-family='Arial' transform='rotate(-30, 200, 200)'>
+          Technical Hub
+        </text>
+        <text x='50%' y='70%' dominant-baseline='middle' text-anchor='middle' 
+              fill='rgba(0, 0, 255, 0.05)' font-size='50' font-family='Arial' transform='rotate(-30, 200, 200)'>
+          Technical Hub
+        </text>
+      </svg>")`,
+    backgroundRepeat: 'repeat',
+    backgroundSize: '400px 400px',
+    padding: '30px 0',
+  },
   container: {
     maxWidth: '600px',
-    margin: '30px auto',
-    backgroundColor: '#d9f0d9', // light green background
+    margin: '0 auto',
+    backgroundColor: '#d9f0d9',
     borderRadius: '8px',
     boxShadow: '0 0 10px rgba(0,0,0,0.1)',
     padding: '20px',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   },
   header: {
-    backgroundColor: '#2e7d32', // dark green
+    backgroundColor: '#2e7d32',
     color: 'white',
     padding: '15px',
     fontSize: '1.8rem',
@@ -53,6 +71,18 @@ const styles = {
     fontSize: '1.1rem',
     marginTop: '10px',
   },
+  loginBtn: {
+    marginTop: '15px',
+    backgroundColor: '#1b5e20',
+    color: 'white',
+    padding: '10px',
+    borderRadius: '6px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    width: '100%',
+  },
   message: {
     marginTop: '15px',
     textAlign: 'center',
@@ -72,6 +102,7 @@ export default function Register() {
   });
   const [message, setMessage] = useState('');
   const [focused, setFocused] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -91,6 +122,12 @@ export default function Register() {
     try {
       const res = await axios.post('http://localhost:5000/api/register', form);
       setMessage(res.data.message);
+
+      // Delay 1 second and redirect to login
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+
       setForm({
         firstName: '',
         lastName: '',
@@ -104,45 +141,64 @@ export default function Register() {
     }
   };
 
+  const goToLogin = () => {
+    navigate('/');
+  };
+
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>🛠️ Register New User</div>
-      <form onSubmit={handleSubmit}>
-        {['firstName', 'lastName', 'phone', 'email', 'password', 'confirmPassword'].map((field) => (
-          <div key={field} style={styles.formGroup}>
-            <label htmlFor={field} style={styles.label}>
-              {field === 'firstName'
-                ? 'First Name'
-                : field === 'lastName'
-                ? 'Last Name'
-                : field === 'phone'
-                ? 'Phone Number'
-                : field === 'email'
-                ? 'Email'
-                : field === 'password'
-                ? 'Password'
-                : 'Confirm Password'}
-            </label>
-            <input
-              type={field.includes('password') ? 'password' : field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
-              id={field}
-              name={field}
-              value={form[field]}
-              onChange={handleChange}
-              onFocus={() => handleFocus(field)}
-              style={{
-                ...styles.input,
-                ...(focused[field] ? styles.inputFocus : {}),
-              }}
-              required
-            />
-          </div>
-        ))}
-        <button type="submit" style={styles.button}>
-          Register
+    <div style={styles.pageWrapper}>
+      <div style={styles.container}>
+        <div style={styles.header}>🛠️ Register New User</div>
+        <form onSubmit={handleSubmit}>
+          {['firstName', 'lastName', 'phone', 'email', 'password', 'confirmPassword'].map((field) => (
+            <div key={field} style={styles.formGroup}>
+              <label htmlFor={field} style={styles.label}>
+                {field === 'firstName'
+                  ? 'First Name'
+                  : field === 'lastName'
+                  ? 'Last Name'
+                  : field === 'phone'
+                  ? 'Phone Number'
+                  : field === 'email'
+                  ? 'Email'
+                  : field === 'password'
+                  ? 'Password'
+                  : 'Confirm Password'}
+              </label>
+              <input
+                type={
+                  field.includes('password')
+                    ? 'password'
+                    : field === 'email'
+                    ? 'email'
+                    : field === 'phone'
+                    ? 'tel'
+                    : 'text'
+                }
+                id={field}
+                name={field}
+                value={form[field]}
+                onChange={handleChange}
+                onFocus={() => handleFocus(field)}
+                style={{
+                  ...styles.input,
+                  ...(focused[field] ? styles.inputFocus : {}),
+                }}
+                required
+              />
+            </div>
+          ))}
+          <button type="submit" style={styles.button}>
+            Register
+          </button>
+        </form>
+        {message && <p style={styles.message}>{message}</p>}
+
+        {/* Login Button */}
+        <button onClick={goToLogin} style={styles.loginBtn}>
+          Already have an account? Login
         </button>
-      </form>
-      {message && <p style={styles.message}>{message}</p>}
+      </div>
     </div>
   );
 }
