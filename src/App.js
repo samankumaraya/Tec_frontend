@@ -7,6 +7,9 @@ import CompletedJobs from './components/CompletedJobs';
 import Header from './pages/Header';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import AdminLogin from './pages/AdminLogin';
+import AdminRegister from './pages/AdminRegister';
+
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
         <Route path="header/" element={<Header />} />
         <Route path="register/" element={<Register />} />
         <Route path="login/" element={<Login />} />
+        <Route path="admin/login" element={<AdminLogin />} />
+        <Route path="admin/register" element={<AdminRegister />} />
+
      </Routes>
 </BrowserRouter>
     </div>
