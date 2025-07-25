@@ -60,10 +60,23 @@ const styles = {
     fontWeight: '700',
     fontSize: '1.1rem',
     marginTop: '10px',
+    width: '100%',
   },
   registerBtn: {
     marginTop: '15px',
     backgroundColor: '#1b5e20',
+    color: 'white',
+    padding: '10px',
+    borderRadius: '6px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    width: '100%',
+  },
+  adminBtn: {
+    marginTop: '10px',
+    backgroundColor: '#004d40',
     color: 'white',
     padding: '10px',
     borderRadius: '6px',
@@ -123,6 +136,10 @@ export default function Login() {
     navigate('/register');
   };
 
+  const goToAdminLogin = () => {
+    navigate('/admin/login');
+  };
+
   return (
     <div style={styles.pageWrapper}>
       <div style={styles.container}>
@@ -173,6 +190,11 @@ export default function Login() {
         {/* Register Button */}
         <button onClick={goToRegister} style={styles.registerBtn}>
           Don't have an account? Register
+        </button>
+
+        {/* Admin Login Button */}
+        <button onClick={goToAdminLogin} style={styles.adminBtn}>
+          🔑 Admin Login
         </button>
       </div>
     </div>

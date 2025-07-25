@@ -50,6 +50,31 @@ const styles = {
     fontWeight: '700',
     fontSize: '1.1rem',
     marginTop: '10px',
+    width: '100%',
+  },
+  loginRedirectBtn: {
+    marginTop: '15px',
+    backgroundColor: '#1b5e20',
+    color: 'white',
+    padding: '10px',
+    borderRadius: '6px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    width: '100%',
+  },
+  userLoginBtn: {
+    marginTop: '10px',
+    backgroundColor: '#00796b',
+    color: 'white',
+    padding: '10px',
+    borderRadius: '6px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    width: '100%',
   },
   message: {
     marginTop: '15px',
@@ -83,12 +108,7 @@ export default function AdminRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !form.username ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
+    if (!form.username || !form.email || !form.password || !form.confirmPassword) {
       setIsSuccess(false);
       setMessage('Please fill all fields');
       return;
@@ -106,14 +126,20 @@ export default function AdminRegister() {
       setMessage(res.data.message);
 
       setTimeout(() => {
-        navigate('/admin/login'); // Redirect to admin login page
+        navigate('/admin/login'); // Redirect to admin login
       }, 1500);
     } catch (error) {
       setIsSuccess(false);
-      setMessage(
-        error.response?.data?.message || 'Registration failed'
-      );
+      setMessage(error.response?.data?.message || 'Registration failed');
     }
+  };
+
+  const goToAdminLogin = () => {
+    navigate('/admin/login');
+  };
+
+  const goToUserLogin = () => {
+    navigate('/login'); // normal user login page
   };
 
   return (
@@ -182,6 +208,14 @@ export default function AdminRegister() {
           {message}
         </p>
       )}
+
+      <button onClick={goToAdminLogin} style={styles.loginRedirectBtn}>
+        🔐 Login as Admin
+      </button>
+
+      <button onClick={goToUserLogin} style={styles.userLoginBtn}>
+        👤 Login as User
+      </button>
     </div>
   );
 }
