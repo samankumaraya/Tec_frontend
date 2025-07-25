@@ -92,12 +92,12 @@ export default function AdminLogin() {
     e.preventDefault();
     setMessage('');
     try {
-      const res = await axios.post('http://localhost:5000/api/admin-login', form);
+      const res = await axios.post('http://localhost:5000/api/admin/login', form);
       setSuccess(true);
       setMessage(res.data.message);
 
       setTimeout(() => {
-        navigate('/admin-dashboard');
+        navigate('/admin/view');
       }, 1000);
 
       setForm({ email: '', password: '' });

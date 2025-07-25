@@ -9,7 +9,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import AdminLogin from './pages/AdminLogin';
 import AdminRegister from './pages/AdminRegister';
-
+import AdminView from './components/AdminView';
 
 function App() {
   return (
@@ -27,6 +27,7 @@ function App() {
         <Route path="login/" element={<Login />} />
         <Route path="admin/login" element={<AdminLogin />} />
         <Route path="admin/register" element={<AdminRegister />} />
+        <Route path="admin/view" element={<AdminView />} />
 
      </Routes>
 </BrowserRouter>

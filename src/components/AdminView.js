@@ -34,7 +34,7 @@ const fromDateTimeLocal = (dtLocal) => {
   return dtLocal.replace('T', ' ') + ':00';
 };
 
-const ViewJobSheets = () => {
+const AdminView = () => {
   const [jobSheets, setJobSheets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -297,25 +297,24 @@ const ViewJobSheets = () => {
                       >
                         👁️ View
                       </button>
-                     {/* <button
+                      <button
                         onClick={() => handleEditClick(job)}
                         className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs"
                       >
                         ✏️ Edit
-                      </button> */}
-                      
+                      </button>
                       <button
                         onClick={() => handlePrint(job)}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
                       >
                         🖨️ Print
                       </button>
-                     {/* <button
+                      <button
                         onClick={() => handleDelete(job.id)}
                         className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs"
                       >
                         🗑️ Delete
-                      </button> */}
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -428,4 +427,4 @@ const ViewJobSheets = () => {
   );
 };
 
-export default ViewJobSheets;
+export default AdminView;

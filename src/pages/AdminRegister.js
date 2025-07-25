@@ -106,7 +106,7 @@ export default function AdminRegister() {
       setMessage(res.data.message);
 
       setTimeout(() => {
-        navigate('/admin'); // Redirect to admin login page
+        navigate('/admin/login'); // Redirect to admin login page
       }, 1500);
     } catch (error) {
       setIsSuccess(false);
