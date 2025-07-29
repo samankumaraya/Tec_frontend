@@ -221,8 +221,9 @@ const ViewJobSheets = () => {
   };
 
   const filteredJobs = jobSheets.filter((job) =>
-    job.customerContact?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  job.customerContact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  job.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   return (
     <div className="min-h-screen bg-green-100 p-0">
@@ -232,7 +233,7 @@ const ViewJobSheets = () => {
       <div className="mb-4 flex justify-center">
         <input
           type="text"
-          placeholder="Search by phone number..."
+          placeholder="Search by phone number... or serial number..."
           className="border border-green-400 px-4 py-2 rounded w-full max-w-md"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

@@ -188,9 +188,7 @@ export default function AdminLogin() {
           </p>
         )}
 
-        <button onClick={goToAdminRegister} style={styles.registerBtn}>
-          📝 Register as Admin
-        </button>
+       
 
         <button onClick={goToUserLogin} style={styles.userLoginBtn}>
           👤 Login as User
