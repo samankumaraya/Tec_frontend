@@ -1,4 +1,4 @@
-// src/components/Header.js
+
 import React from 'react';
 import { Home, Eye, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';

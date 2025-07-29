@@ -123,7 +123,7 @@ export default function Register() {
       const res = await axios.post('http://localhost:5000/api/register', form);
       setMessage(res.data.message);
 
-      // Delay 1 second and redirect to login
+      
       setTimeout(() => {
         navigate('/');
       }, 1000);
@@ -194,7 +194,7 @@ export default function Register() {
         </form>
         {message && <p style={styles.message}>{message}</p>}
 
-        {/* Login Button */}
+       
         <button onClick={goToLogin} style={styles.loginBtn}>
           Already have an account? Login
         </button>

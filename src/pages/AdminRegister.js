@@ -126,7 +126,7 @@ export default function AdminRegister() {
       setMessage(res.data.message);
 
       setTimeout(() => {
-        navigate('/admin/login'); // Redirect to admin login
+        navigate('/admin/login'); 
       }, 1500);
     } catch (error) {
       setIsSuccess(false);
@@ -139,7 +139,7 @@ export default function AdminRegister() {
   };
 
   const goToUserLogin = () => {
-    navigate('/login'); // normal user login page
+    navigate('/login'); 
   };
 
   return (

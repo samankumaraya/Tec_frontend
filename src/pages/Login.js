@@ -180,19 +180,19 @@ export default function Login() {
           <button type="submit" style={styles.button}>Login</button>
         </form>
 
-        {/* Message (success or error) */}
+       
         {message && (
           <p style={{ ...styles.message, ...(success ? styles.success : {}) }}>
             {message}
           </p>
         )}
 
-        {/* Register Button */}
+        
         <button onClick={goToRegister} style={styles.registerBtn}>
           Don't have an account? Register
         </button>
 
-        {/* Admin Login Button */}
+        
         <button onClick={goToAdminLogin} style={styles.adminBtn}>
           🔑 Admin Login
         </button>

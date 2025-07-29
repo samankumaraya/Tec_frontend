@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { User } from 'lucide-react'; // Optional icon package
+import { User } from 'lucide-react'; 
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -19,10 +19,10 @@ const HomePage = () => {
 
   const handleViewProfile = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/user-profile'); // Adjust endpoint
+      const res = await axios.get('http://localhost:5000/api/user-profile'); 
       setProfile(res.data);
       setShowProfilePopup(true);
-      setShowMenu(false); // close menu when opening profile
+      setShowMenu(false); 
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
@@ -50,22 +50,22 @@ const HomePage = () => {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', width: '100vw' }}>
-      {/* Background image with reduced opacity */}
+      
       <div style={{
         backgroundColor: '#16a34a',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        opacity: 0.2,   // reduced opacity
+        opacity: 0.2,   
         position: 'fixed',
         top: 0, left: 0,
         width: '100vw',
         height: '100vh',
         zIndex: -1,
-        pointerEvents: 'none', // don't block interactions
+        pointerEvents: 'none', 
       }} />
 
-      {/* Actual content container */}
+      
       <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
         <div style={topBarStyle}>
           <h1 style={titleStyle}>TECHNICAL <span style={{ color: 'black' }}>HUB</span></h1>
@@ -76,7 +76,7 @@ const HomePage = () => {
               ...(showMenu ? profileIconContainerHover : {}),
             }}
             onClick={() => setShowMenu(!showMenu)}
-            // Removed onMouseLeave to fix popup issue
+            
           >
             <User color="black" size={28} />
             {showMenu && (
@@ -122,7 +122,6 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Profile Popup */}
         {showProfilePopup && profile && (
           <div style={popupOverlay}>
             <div style={popupContent}>
@@ -151,7 +150,7 @@ const HomePage = () => {
   );
 };
 
-// 🔧 Styles
+
 
 const topBarStyle = {
   display: 'flex',
