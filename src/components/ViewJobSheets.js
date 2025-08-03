@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../pages/Header';
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const formatDateTime = (dateStr) => {
   if (!dateStr) return '';
@@ -14,6 +15,7 @@ const formatDateTime = (dateStr) => {
   const min = String(date.getMinutes()).padStart(2, '0');
   return `${y}-${m}-${d} ${h}:${min}`;
 };
+
 
 
 const toDateTimeLocal = (dateStr) => {
@@ -41,6 +43,10 @@ const ViewJobSheets = () => {
   const [editingJob, setEditingJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingJob, setViewingJob] = useState(null);
+  const [startDate, setStartDate] = useState('');
+const [endDate, setEndDate] = useState('');
+const [technicianFilter, setTechnicianFilter] = useState('All Technicians');
+
 
   useEffect(() => {
     fetchJobSheets();
@@ -220,11 +226,47 @@ const ViewJobSheets = () => {
     }
   };
 
-  const filteredJobs = jobSheets.filter((job) =>
-  job.customerContact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  job.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase())
-);
+  const filteredJobs = jobSheets.filter((job) => {
+  const searchMatch =
+    job.customerContact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    job.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    job.customerName?.toLowerCase().includes(searchTerm.toLowerCase());
 
+  const startMatch = !startDate || new Date(job.dateReceived) >= new Date(startDate);
+  const endMatch = !endDate || new Date(job.dateReceived) <= new Date(endDate);
+  const technicianMatch =
+    technicianFilter === 'All Technicians' || job.technicianAssigned === technicianFilter;
+
+  return searchMatch && startMatch && endMatch && technicianMatch;
+});
+
+const handleExportToExcel = () => {
+  const exportData = filteredJobs.map((job) => ({
+    JobID: job.id,
+    CustomerName: job.customerName,
+    Contact: job.customerContact,
+    Printer: `${job.printerBrand} ${job.printerModel}`,
+    SerialNumber: job.serialNumber,
+    Problem: job.reportedProblem,
+    Status: job.jobStatus,
+    Technician: job.technicianAssigned,
+    DateReceived: formatDateTime(job.dateReceived),
+    CostEstimate: job.costEstimate,
+    FinalCost: job.finalCost,
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'JobSheets');
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+  });
+
+  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(data, `JobSheets_${new Date().toISOString().slice(0, 10)}.xlsx`);
+};
   return (
     <div className="min-h-screen bg-green-100 p-0">
       <Header />
@@ -239,6 +281,44 @@ const ViewJobSheets = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+<div className="flex flex-wrap justify-center gap-2 mb-4">
+  <input
+    type="text"
+    placeholder="Search by mobile, serial or name"
+    className="border px-3 py-2 rounded"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+  <input
+    type="date"
+    className="border px-3 py-2 rounded"
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+  />
+  <input
+    type="date"
+    className="border px-3 py-2 rounded"
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+  />
+  <select
+    className="border px-3 py-2 rounded"
+    value={technicianFilter}
+    onChange={(e) => setTechnicianFilter(e.target.value)}
+  >
+    <option>All Technicians</option>
+    {[...new Set(jobSheets.map(j => j.technicianAssigned))].filter(Boolean).map((tech, i) => (
+      <option key={i}>{tech}</option>
+    ))}
+  </select>
+
+  <button
+    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded flex items-center"
+    onClick={handleExportToExcel}
+  >
+    <span className="mr-2">⬇</span> Excel
+  </button>
+</div>
 
       {loading ? (
         <div className="text-center text-lg text-blue-600">Loading job sheets...</div>
